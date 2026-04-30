@@ -1,0 +1,21 @@
+version: '4.3'
+
+services:
+
+  db:
+    image: postgres:15
+    container_name: postgres-db
+    environment:
+      POSTGRES_DB: cepdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+
+  app:
+    build: .
+    container_name: cep-api
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
