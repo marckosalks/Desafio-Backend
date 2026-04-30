@@ -1,5 +1,6 @@
 package br.com.f1rst.cep_consulta_service.service;
 
+import br.com.f1rst.cep_consulta_service.client.AgenciaClient;
 import br.com.f1rst.cep_consulta_service.client.ViaCepClient;
 import br.com.f1rst.cep_consulta_service.dto.*;
 import br.com.f1rst.cep_consulta_service.entity.CepLog;
@@ -14,16 +15,19 @@ import java.time.LocalDateTime;
 public class CepService {
 
     private final ViaCepClient viaCepClient;
+    private final AgenciaClient agenciaClient;
     private final CepLogRepository repository;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public CepService(ViaCepClient viaCepClient,
+                      AgenciaClient agenciaClient,
                       CepLogRepository repository) {
         this.viaCepClient = viaCepClient;
+        this.agenciaClient = agenciaClient;
         this.repository = repository;
     }
 
-    public CepResponseDto buscarCep(CepDto cepDto) throws CepNotFoundException {
+    public ConsultaResponse buscarCep(CepDto cepDto) throws CepNotFoundException {
 
         ViaCepResponse response = viaCepClient.buscarCep(cepDto.getCep());
 
@@ -31,21 +35,34 @@ public class CepService {
             throw new CepNotFoundException("Cep Não encontrado!");
         }
 
-        // 🔥 salvar log
-        salvarLog(cepDto.getCep(), response);
+        AgenciaResponse agencia;
+        try {
+            agencia = agenciaClient.buscarAgencia(cepDto.getCep());
+        } catch (Exception e) {
+            agencia = AgenciaResponse.builder()
+                    .nome("Não disponível")
+                    .endereco("Não disponível")
+                    .distancia("Não disponível")
+                    .build();
+        }
 
-        return CepResponseDto.builder()
-                .cep(response.getCep())
-                .logradouro(response.getLogradouro())
-                .bairro(response.getBairro())
-                .cidade(response.getLocalidade())
-                .uf(response.getUf())
+
+        salvarLog(cepDto.getCep(), response, agencia);
+
+        return ConsultaResponse.builder()
+                .cep(response)
+                .agencia(agencia)
                 .build();
     }
 
-    private void salvarLog(String cep, ViaCepResponse response) {
+    private void salvarLog(String cep, ViaCepResponse response, AgenciaResponse agencia) {
         try {
-            String json = objectMapper.writeValueAsString(response);
+            String json = objectMapper.writeValueAsString(
+                    ConsultaResponse.builder()
+                            .cep(response)
+                            .agencia(agencia)
+                            .build()
+            );
 
             CepLog log = CepLog.builder()
                     .cep(cep)
@@ -56,7 +73,6 @@ public class CepService {
             repository.save(log);
 
         } catch (Exception e) {
-            // evita quebrar a aplicação por causa de log
             System.out.println("Erro ao salvar log: " + e.getMessage());
         }
     }
