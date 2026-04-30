@@ -2,29 +2,32 @@ package br.com.f1rst.cep_consulta_service.service;
 
 import br.com.f1rst.cep_consulta_service.client.AgenciaClient;
 import br.com.f1rst.cep_consulta_service.client.ViaCepClient;
-import br.com.f1rst.cep_consulta_service.dto.*;
-import br.com.f1rst.cep_consulta_service.entity.CepLog;
+import br.com.f1rst.cep_consulta_service.dto.AgenciaResponse;
+import br.com.f1rst.cep_consulta_service.dto.ConsultaResponse;
+import br.com.f1rst.cep_consulta_service.dto.CepDto;
+import br.com.f1rst.cep_consulta_service.dto.ViaCepResponse;
+import br.com.f1rst.cep_consulta_service.event.CepSearchEvent;
 import br.com.f1rst.cep_consulta_service.exception.CepNotFoundException;
-import br.com.f1rst.cep_consulta_service.repository.CepLogRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 
 @Service
 public class CepService {
 
     private final ViaCepClient viaCepClient;
     private final AgenciaClient agenciaClient;
-    private final CepLogRepository repository;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ApplicationEventPublisher eventPublisher;
+    private final ObjectMapper objectMapper;
 
     public CepService(ViaCepClient viaCepClient,
                       AgenciaClient agenciaClient,
-                      CepLogRepository repository) {
+                      ApplicationEventPublisher eventPublisher,
+                      ObjectMapper objectMapper) {
         this.viaCepClient = viaCepClient;
         this.agenciaClient = agenciaClient;
-        this.repository = repository;
+        this.eventPublisher = eventPublisher;
+        this.objectMapper = objectMapper;
     }
 
     public ConsultaResponse buscarCep(CepDto cepDto) throws CepNotFoundException {
@@ -51,7 +54,7 @@ public class CepService {
         }
 
 
-        salvarLog(cepDto.getCep(), response, agencia);
+        publishCepSearchEvent(cepDto.getCep(), response, agencia);
 
         return ConsultaResponse.builder()
                 .cep(response)
@@ -59,7 +62,7 @@ public class CepService {
                 .build();
     }
 
-    private void salvarLog(String cep, ViaCepResponse response, AgenciaResponse agencia) {
+    private void publishCepSearchEvent(String cep, ViaCepResponse response, AgenciaResponse agencia) {
         try {
             String json = objectMapper.writeValueAsString(
                     ConsultaResponse.builder()
@@ -68,16 +71,13 @@ public class CepService {
                             .build()
             );
 
-            CepLog log = CepLog.builder()
+            eventPublisher.publishEvent(CepSearchEvent.builder()
                     .cep(cep)
-                    .response(json)
-                    .dataConsulta(LocalDateTime.now())
-                    .build();
-
-            repository.save(log);
+                    .responseJson(json)
+                    .build());
 
         } catch (Exception e) {
-            System.out.println("Erro ao salvar log: " + e.getMessage());
+            System.out.println("Erro ao publicar evento de busca: " + e.getMessage());
         }
     }
 }

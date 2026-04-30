@@ -1,18 +1,52 @@
 # DESAFIO SANTANDER F1RST ♨️
 
-A parte crucial é entender a nossa regra de negócio que no caso é o doc do desafio,
-porem notei alguns detalhes que não estão no doc precisam ser definidos por mim.
-
-
-Temos 2 dias pra desenvolver uma microserviço em java(crud) baseada em SOLID e spring que consome uma api externa de cep,
-precisa usar Mockoon, tambem a cada requisição de consulta vamos registrar logs na aplicação horário 
-da consulta e os dados retornas no caso um json, interessante rodar o banco e a api em docker e aws.
-
+Microserviço de consulta de CEP em Java com Spring Boot, seguindo princípios SOLID.
 
 ## Tecnologias usadas:
 
-API MAPBOX, OPENSTREETMAP OU VIACEP
-JAVA
-SPRING
-DOCKER(banco e api)
-AWS
+- API ViaCep
+- Spring Boot 4.x
+- Spring Cloud OpenFeign
+- Docker (banco e API)
+- PostgreSQL
+- WireMock (mocking)
+- AWS
+
+## Arquitetura
+
+```mermaid
+flowchart TD
+    Client[Client / Postman] -->|GET /consulta/{cep}| Controller[ConsultaController]
+    Controller -->|buscarCep| Service[CepService]
+    Service -->|GET /ws/{cep}/json/| ViaCep[ViaCep API]
+    Service -->|GET /agencia?cep={cep}| Agencia[Agencia API]
+    Service -->|publishEvent| Event[CepSearchEvent]
+    Event -->|handle| Listener[CepLogListener]
+    Listener -->|save| DB[(PostgreSQL)]
+
+    ViaCep -.->|@FeignClient| FeignConfig[Feign Config]
+    Agencia -.->|@FeignClient| FeignConfig
+
+    subgraph Async Logging
+        Event -->|Observer Pattern| Listener
+    end
+```
+
+## Executando
+
+```bash
+docker-compose up --build
+```
+
+A API estará disponível em `http://localhost:8080`.
+
+### Endpoints
+
+- `GET /consulta/{cep}` - Consulta um CEP
+- `GET /logs` - Retorna todos os logs de consulta
+
+## Testes
+
+```bash
+./mvnw test
+```
