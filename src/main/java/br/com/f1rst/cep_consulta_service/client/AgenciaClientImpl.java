@@ -12,7 +12,7 @@ public class AgenciaClientImpl implements AgenciaClient {
 
     @Override
     public AgenciaResponse buscarAgencia(String cep) {
-        String url = "http:/localhost:3001/agencia?cep=" + cep;
+        String url = "http://localhost:3001/agencia?cep=" + cep;
 
         return restTemplate.getForObject(url, AgenciaResponse.class);
     }

@@ -35,10 +35,14 @@ public class CepService {
             throw new CepNotFoundException("Cep Não encontrado!");
         }
 
+
         AgenciaResponse agencia;
+
         try {
             agencia = agenciaClient.buscarAgencia(cepDto.getCep());
+
         } catch (Exception e) {
+
             agencia = AgenciaResponse.builder()
                     .nome("Não disponível")
                     .endereco("Não disponível")
