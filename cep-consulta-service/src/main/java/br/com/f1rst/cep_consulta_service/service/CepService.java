@@ -18,7 +18,7 @@ public class CepService {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public CepService(ViaCepClient viaCepClient,
-                      CepLogRepository repository) {
+            CepLogRepository repository) {
         this.viaCepClient = viaCepClient;
         this.repository = repository;
     }
