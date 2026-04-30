@@ -1,18 +1,20 @@
 package br.com.f1rst.cep_consulta_service.service;
 
+import br.com.f1rst.cep_consulta_service.client.ViaCepClient;
 import br.com.f1rst.cep_consulta_service.dto.CepDto;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CepService {
-    //consumo a api via cep
-    //montar url usando o cep passado
-    //gravar o json e data da consulta no banco
 
+    private final ViaCepClient viaCepClient;
+
+    public CepService(ViaCepClient viaCepClient) {
+        this.viaCepClient = viaCepClient;
+    }
 
     public String buscarCep(CepDto cep) {
-
-        return "Buscar pedido no viacep " + cep.getCep();
+        return viaCepClient.buscarCep(cep.getCep());
     }
 
     public String guardaLogs(String data) {

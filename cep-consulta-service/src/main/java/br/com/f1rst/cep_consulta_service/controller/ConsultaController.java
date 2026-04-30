@@ -17,11 +17,11 @@ public class ConsultaController {
         this.cepService = cepService;
     }
 
-
-    @GetMapping("/{cep}")
+    @GetMapping("/{cep:.+}")
     @ResponseStatus(HttpStatus.OK)
-    public String consultaCep (@ModelAttribute @Valid CepDto cep){
-        String cepLimpo = CepUtils.limpar(String.valueOf(cep));
+    public String consultaCep (@PathVariable @Valid String cep){
+
+        String cepLimpo = CepUtils.limpar(cep);
 
         CepDto dto = new CepDto(cepLimpo);
 
