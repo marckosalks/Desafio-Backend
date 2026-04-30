@@ -16,10 +16,6 @@ public class CepService {
         this.viaCepClient = viaCepClient;
     }
 
-//    public ViaCepResponse buscarCep(CepDto cep) {
-//        return viaCepClient.buscarCep(cep.getCep());
-//    }
-
     public CepResponseDto buscarCep(CepDto cepDto) throws CepNotFoundException {
 
         ViaCepResponse response = viaCepClient.buscarCep(cepDto.getCep());

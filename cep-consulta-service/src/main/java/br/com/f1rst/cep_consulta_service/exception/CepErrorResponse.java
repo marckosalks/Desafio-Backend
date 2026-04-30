@@ -2,6 +2,8 @@ package br.com.f1rst.cep_consulta_service.exception;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 
 @Getter
 @Setter
@@ -10,7 +12,8 @@ import lombok.*;
 @Builder
 
 public class CepErrorResponse {
+
     private String message;
     private Integer status;
-
+    private LocalDateTime timestamp;
 }
