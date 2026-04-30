@@ -1,5 +1,7 @@
 package br.com.f1rst.cep_consulta_service.client;
 
+import br.com.f1rst.cep_consulta_service.dto.ViaCepResponse;
+
 public interface ViaCepClient {
-    String buscarCep(String cep);
+    ViaCepResponse buscarCep(String cep);
 }
