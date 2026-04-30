@@ -18,9 +18,13 @@
         <module name="cep-consulta-service" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="Desafio-F1rts" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Desafio-F1rts" options="-parameters" />
       <module name="cep-consulta-service" options="-parameters" />
     </option>
   </component>
