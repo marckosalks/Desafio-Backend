@@ -1,6 +1,8 @@
 package br.com.f1rst.cep_consulta_service.controller;
 
 import br.com.f1rst.cep_consulta_service.dto.CepDto;
+import br.com.f1rst.cep_consulta_service.dto.ConsultaResponse;
+import br.com.f1rst.cep_consulta_service.exception.CepNotFoundException;
 import br.com.f1rst.cep_consulta_service.service.CepService;
 import br.com.f1rst.cep_consulta_service.utils.CepUtils;
 import jakarta.validation.Valid;
@@ -17,11 +19,11 @@ public class ConsultaController {
         this.cepService = cepService;
     }
 
-
-    @GetMapping("/{cep}")
+    @GetMapping("/{cep:.+}")
     @ResponseStatus(HttpStatus.OK)
-    public String consultaCep (@ModelAttribute @Valid CepDto cep){
-        String cepLimpo = CepUtils.limpar(String.valueOf(cep));
+    public ConsultaResponse consultaCep (@PathVariable @Valid String cep) throws CepNotFoundException {
+
+        String cepLimpo = CepUtils.limpar(cep);
 
         CepDto dto = new CepDto(cepLimpo);
 
