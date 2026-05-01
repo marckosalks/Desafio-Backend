@@ -47,6 +47,18 @@ A API estará disponível em `http://localhost:8080`.
 
 ## Testes
 
+A aplicação possui cobertura de testes unitários e de integração para garantir a qualidade das funcionalidades principais.
+
+### Tipos de Testes:
+- **Unitários (`CepServiceTest`)**: Valida a lógica de negócio, incluindo o tratamento de erro do ViaCep e o fallback (contingência) quando a API de agências está indisponível.
+- **Integração (`ConsultaControllerTest`)**: Valida os endpoints da API, contratos JSON e tratamento de exceções usando `MockMvc`.
+
+### Como rodar os testes:
+
+Para executar todos os testes da aplicação, use o comando:
+
 ```bash
 ./mvnw test
 ```
+
+Os resultados serão exibidos no console, detalhando o sucesso ou falha de cada cenário testado.
