@@ -21,9 +21,9 @@ public class CepService {
     private final ObjectMapper objectMapper;
 
     public CepService(ViaCepClient viaCepClient,
-                      AgenciaClient agenciaClient,
-                      ApplicationEventPublisher eventPublisher,
-                      ObjectMapper objectMapper) {
+            AgenciaClient agenciaClient,
+            ApplicationEventPublisher eventPublisher,
+            ObjectMapper objectMapper) {
         this.viaCepClient = viaCepClient;
         this.agenciaClient = agenciaClient;
         this.eventPublisher = eventPublisher;
@@ -32,33 +32,31 @@ public class CepService {
 
     public ConsultaResponse buscarCep(CepDto cepDto) throws CepNotFoundException {
 
-        ViaCepResponse response = viaCepClient.buscarCep(cepDto.getCep());
+        ViaCepResponse responseViaCep = viaCepClient.buscarCep(cepDto.getCep());
 
-        if (response.getErro() != null && response.getErro()) {
+        if ("true".equals(responseViaCep.getErro())) {
             throw new CepNotFoundException("Cep Não encontrado!");
         }
 
-
-        AgenciaResponse agencia;
+        AgenciaResponse responseAgencia;
 
         try {
-            agencia = agenciaClient.buscarAgencia(cepDto.getCep());
+            responseAgencia = agenciaClient.buscarAgencia(cepDto.getCep());
 
         } catch (Exception e) {
 
-            agencia = AgenciaResponse.builder()
+            responseAgencia = AgenciaResponse.builder()
                     .nome("Não disponível")
                     .endereco("Não disponível")
                     .distancia("Não disponível")
                     .build();
         }
 
-
-        publishCepSearchEvent(cepDto.getCep(), response, agencia);
+        publishCepSearchEvent(cepDto.getCep(), responseViaCep, responseAgencia);
 
         return ConsultaResponse.builder()
-                .cep(response)
-                .agencia(agencia)
+                .cep(responseViaCep)
+                .agencia(responseAgencia)
                 .build();
     }
 
@@ -68,8 +66,7 @@ public class CepService {
                     ConsultaResponse.builder()
                             .cep(response)
                             .agencia(agencia)
-                            .build()
-            );
+                            .build());
 
             eventPublisher.publishEvent(CepSearchEvent.builder()
                     .cep(cep)
