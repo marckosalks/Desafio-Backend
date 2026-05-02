@@ -4,6 +4,7 @@ import br.com.f1rst.cep_consulta_service.entity.CepLog;
 import br.com.f1rst.cep_consulta_service.event.CepSearchEvent;
 import br.com.f1rst.cep_consulta_service.repository.CepLogRepository;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -17,6 +18,7 @@ public class CepLogListener {
         this.repository = repository;
     }
 
+    @Async
     @EventListener
     public void handleCepSearchEvent(CepSearchEvent event) {
         CepLog log = CepLog.builder()
