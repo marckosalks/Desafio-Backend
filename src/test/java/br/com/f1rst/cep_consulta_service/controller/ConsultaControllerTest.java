@@ -5,11 +5,13 @@ import br.com.f1rst.cep_consulta_service.dto.ConsultaResponse;
 import br.com.f1rst.cep_consulta_service.dto.ViaCepResponse;
 import br.com.f1rst.cep_consulta_service.exception.CepNotFoundException;
 import br.com.f1rst.cep_consulta_service.service.CepService;
+import br.com.f1rst.cep_consulta_service.config.SecurityConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -22,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(ConsultaController.class)
 @ActiveProfiles("test")
+@Import(SecurityConfig.class)
 class ConsultaControllerTest {
 
     @Autowired

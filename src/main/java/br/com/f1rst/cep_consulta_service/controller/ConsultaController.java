@@ -6,11 +6,14 @@ import br.com.f1rst.cep_consulta_service.exception.CepNotFoundException;
 import br.com.f1rst.cep_consulta_service.service.CepService;
 import br.com.f1rst.cep_consulta_service.utils.CepUtils;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/consulta")
+@Validated
 public class ConsultaController {
 
     private final CepService cepService;
@@ -21,7 +24,7 @@ public class ConsultaController {
 
     @GetMapping("/{cep:.+}")
     @ResponseStatus(HttpStatus.OK)
-    public ConsultaResponse consultaCep (@PathVariable @Valid String cep) throws CepNotFoundException {
+    public ConsultaResponse consultaCep (@PathVariable @Valid @Pattern(regexp = "^\\d{8}$", message = "CEP inválido") String cep) throws CepNotFoundException {
 
         String cepLimpo = CepUtils.limpar(cep);
 
