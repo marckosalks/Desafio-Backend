@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: cep-consulta-service
+
+  datasource:
+    url: jdbc:postgresql://db:5432/cepdb
+    username: postgres
+    password: postgres
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+agencia:
+  url: ${AGENCIA_URL:http://localhost:3001}

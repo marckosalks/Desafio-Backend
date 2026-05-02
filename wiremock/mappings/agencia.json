@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/agencia"
+  },
+  "response": {
+    "status": 200,
+    "body": "{\"nome\": \"Agência Santander\", \"endereco\": \"Rua próxima ao CEP\", \"distancia\": \"20m\"}",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}
