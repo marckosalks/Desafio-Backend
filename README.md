@@ -8,25 +8,19 @@ Este projeto é um microserviço robusto desenvolvido para o desafio técnico do
 
 A arquitetura foi desenhada seguindo o padrão de **Microserviços** e utiliza o conceito de **Event-Driven Architecture** para garantir que operações de I/O (como logs) não bloqueiem a resposta ao usuário.
 
-```mermaid
-flowchart TD
-    Client[Client / Postman / Swagger] -->|GET /v1/consulta/{cep}| Controller[ConsultaController]
-    Controller -->|Validação Bean Validation| Controller
-    Controller -->|buscarCep| Service[CepService]
-    
-    subgraph Integração Externa
-        Service -->|FeignClient| ViaCep[ViaCep API]
-        Service -->|FeignClient| Agencia[Agencia Mock API]
-    end
-    
-    Service -->|Publica Evento| Event[CepSearchEvent]
-    
-    subgraph Processamento Assíncrono
-        Event -.->|Thread Separada| Listener[CepLogListener]
-        Listener -->|Persistência| DB[(PostgreSQL)]
-    end
-    
-    Service -->|Resposta Rápida| Client
+```text
+Client (Postman / Swagger)
+       ↓
+ConsultaController (Validação)
+       ↓
+   CepService
+       ├──→ ViaCep API (Feign)
+       ├──→ Agencia API (Feign)
+       └──→ Publica Evento (CepSearchEvent)
+                    ↓
+             CepLogListener (Async)
+                    ↓
+                PostgreSQL
 ```
 
 ---
