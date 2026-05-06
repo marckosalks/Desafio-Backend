@@ -8,7 +8,7 @@
 		<version>3.3.4</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>br.com.f1rst</groupId>
+	<groupId>br.com.app</groupId>
 	<artifactId>cep-consulta-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>cep-consulta-service</name>
