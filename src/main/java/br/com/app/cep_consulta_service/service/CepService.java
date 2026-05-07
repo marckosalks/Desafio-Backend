@@ -40,15 +40,9 @@ public class CepService {
 
         AgenciaResponse responseAgencia;
 
-        responseAgencia = agenciaClient.buscarAgencia(cepDto.getCep());
-        System.out.println(responseAgencia);
-
-
         try {
             responseAgencia = agenciaClient.buscarAgencia(cepDto.getCep());
-
         } catch (Exception e) {
-
             responseAgencia = AgenciaResponse.builder()
                     .nome("Não disponível")
                     .endereco("Não disponível")
